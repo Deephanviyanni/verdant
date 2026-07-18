@@ -77,7 +77,7 @@ export default function ProfileModal({ profile, isOwn, onClose, onSaved }: Props
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in" onClick={onClose}>
       <div className="card shadow-soft w-full max-w-md max-h-[90vh] overflow-y-auto animate-slide-up" onClick={(e) => e.stopPropagation()}>
         {/* Header banner */}
-        <div className="h-24 rounded-t-2xl relative" style={{ background: "linear-gradient(135deg, #a3c2a4, #7d9a74, #5e7d56)" }}>
+        <div className="h-24 rounded-t-2xl relative" style={{ background: "linear-gradient(135deg, #7dd3fc, #38bdf8, #0284c7)" }}>
           <button onClick={onClose} className="absolute top-3 right-3 p-1.5 rounded-lg bg-black/20 text-white hover:bg-black/30 transition-colors">
             <X className="w-4 h-4" />
           </button>

@@ -91,14 +91,14 @@ export default function FriendSearchModal({ onClose, onSent }: Props) {
             <p className="text-sm text-center py-8" style={{ color: "var(--text-muted)" }}>Start typing to search for people.</p>
           )}
           {results.map((p) => (
-            <div key={p.id} className="px-3 py-2.5 rounded-xl flex items-center gap-3 hover:bg-stone-100 dark:hover:bg-stone-800/40 transition-colors">
+            <div key={p.id} className="px-3 py-2.5 rounded-xl flex items-center gap-3 hover:bg-ocean-50 dark:hover:bg-mist-800/40 transition-colors">
               <Avatar profile={p} size="md" />
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-sm truncate">{p.display_name || p.username}</p>
                 <p className="text-xs truncate" style={{ color: "var(--text-muted)" }}>@{p.username}</p>
               </div>
               {sentIds.has(p.id) ? (
-                <span className="flex items-center gap-1 text-sm text-leaf-600 px-3 py-1.5">
+                <span className="flex items-center gap-1 text-sm text-teal-600 px-3 py-1.5">
                   <Check className="w-4 h-4" /> Sent
                 </span>
               ) : (

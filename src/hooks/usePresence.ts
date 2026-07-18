@@ -18,7 +18,7 @@ export function usePresence() {
   useEffect(() => {
     if (!user) return;
 
-    const channel = supabase.channel("nature-chat-presence", {
+    const channel = supabase.channel("ocean-chat-presence", {
       config: { presence: { key: user.id } },
     });
 

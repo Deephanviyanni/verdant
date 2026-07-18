@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { memo, useState, useRef, useEffect } from "react";
 import type { Message, Profile } from "../lib/types";
 import { formatTime } from "../lib/utils";
 import Avatar from "./Avatar";
@@ -17,7 +17,7 @@ type Props = {
   onReply: () => void;
 };
 
-export default function MessageBubble({
+function MessageBubbleInner({
   message, isMine, friend, showAvatar, replyTo, myReadReceipts,
   onViewOnce, onDeleteForMe, onDeleteForEveryone, onReply,
 }: Props) {
@@ -67,7 +67,7 @@ export default function MessageBubble({
         <div
           className={`px-3.5 py-2 rounded-2xl ${isMine ? "rounded-br-sm" : "rounded-bl-sm"} ${replyTo ? "rounded-tr-none rounded-tl-none" : ""}`}
           style={isMine
-            ? { background: "linear-gradient(135deg, #5e7d56, #477d3c)", color: "white" }
+            ? { background: "linear-gradient(135deg, #38bdf8, #0284c7)", color: "white" }
             : { background: "var(--bg-elevated)", color: "var(--text-primary)" }
           }
         >
@@ -130,10 +130,10 @@ export default function MessageBubble({
             </button>
             {showMenu && (
               <div className={`absolute top-full mt-1 z-20 card shadow-soft py-1 min-w-[150px] animate-fade-in ${isMine ? "right-0" : "left-0"}`}>
-                <button onClick={() => { onReply(); setShowMenu(false); }} className="w-full px-3 py-1.5 text-xs text-left hover:bg-stone-100 dark:hover:bg-stone-800/40 flex items-center gap-2">
+                <button onClick={() => { onReply(); setShowMenu(false); }} className="w-full px-3 py-1.5 text-xs text-left hover:bg-ocean-50 dark:hover:bg-mist-800/40 flex items-center gap-2">
                   <Reply className="w-3.5 h-3.5" /> Reply
                 </button>
-                <button onClick={() => { onDeleteForMe(); setShowMenu(false); }} className="w-full px-3 py-1.5 text-xs text-left hover:bg-stone-100 dark:hover:bg-stone-800/40 flex items-center gap-2">
+                <button onClick={() => { onDeleteForMe(); setShowMenu(false); }} className="w-full px-3 py-1.5 text-xs text-left hover:bg-ocean-50 dark:hover:bg-mist-800/40 flex items-center gap-2">
                   <Trash2 className="w-3.5 h-3.5" /> Delete for me
                 </button>
                 {isMine && (
@@ -149,6 +149,9 @@ export default function MessageBubble({
     </div>
   );
 }
+
+const MessageBubble = memo(MessageBubbleInner);
+export default MessageBubble;
 
 function VoicePlayer({ url, isMine }: { url: string; isMine: boolean }) {
   const audioRef = useRef<HTMLAudioElement>(null);

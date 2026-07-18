@@ -74,7 +74,7 @@ export default function SettingsModal({ onClose, onPrivacyChanged }: Props) {
                 <button
                   key={t}
                   onClick={() => setTheme(t)}
-                  className={`flex-1 py-3 rounded-xl border-2 transition-all flex flex-col items-center gap-1.5 ${theme === t ? "border-leaf-500 bg-leaf-500/5" : "border-transparent"}`}
+                  className={`flex-1 py-3 rounded-xl border-2 transition-all flex flex-col items-center gap-1.5 ${theme === t ? "border-ocean-500 bg-ocean-500/5" : "border-transparent"}`}
                   style={{ background: "var(--bg-elevated)" }}
                 >
                   {t === "light" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -152,13 +152,13 @@ export default function SettingsModal({ onClose, onPrivacyChanged }: Props) {
 
 function ToggleRow({ icon, title, desc, checked, onChange }: { icon: React.ReactNode; title: string; desc: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
-    <button onClick={() => onChange(!checked)} className="w-full px-4 py-3 rounded-xl flex items-center gap-3 hover:bg-stone-100 dark:hover:bg-stone-800/40 transition-colors text-left">
+    <button onClick={() => onChange(!checked)} className="w-full px-4 py-3 rounded-xl flex items-center gap-3 hover:bg-ocean-50 dark:hover:bg-mist-800/40 transition-colors text-left">
       <span style={{ color: "var(--text-muted)" }}>{icon}</span>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium">{title}</p>
         <p className="text-xs" style={{ color: "var(--text-muted)" }}>{desc}</p>
       </div>
-      <div className={`w-10 h-6 rounded-full transition-colors relative shrink-0 ${checked ? "bg-leaf-500" : "bg-stone-300 dark:bg-stone-700"}`}>
+      <div className={`w-10 h-6 rounded-full transition-colors relative shrink-0 ${checked ? "bg-ocean-500" : "bg-mist-300 dark:bg-mist-700"}`}>
         <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-transform ${checked ? "translate-x-4" : "translate-x-0.5"}`} />
       </div>
     </button>

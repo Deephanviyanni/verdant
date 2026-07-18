@@ -5,7 +5,7 @@ import type { ChatListItem, FriendRequestItem } from "../hooks/useChatData";
 import type { Profile, AppNotification } from "../lib/types";
 import { isOnline, formatTime, formatLastSeen } from "../lib/utils";
 import Avatar from "./Avatar";
-import { Search, Users, MessageSquare, Bell, Settings, Leaf, Moon, Sun, X, UserPlus, Check } from "lucide-react";
+import { Search, Users, MessageSquare, Bell, Settings, Waves, Moon, Sun, X, UserPlus, Check } from "lucide-react";
 
 type Tab = "chats" | "friends" | "requests";
 
@@ -45,10 +45,10 @@ export default function Sidebar({
       {/* Header */}
       <div className="px-4 py-3.5 border-b flex items-center justify-between gap-2">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #7d9a74, #477d3c)" }}>
-            <Leaf className="w-5 h-5 text-white" />
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #38bdf8, #0284c7)" }}>
+            <Waves className="w-5 h-5 text-white" />
           </div>
-          <span className="font-serif text-lg font-semibold">Verdant</span>
+          <span className="font-serif text-lg font-semibold">Ocean Breeze</span>
         </div>
         <div className="flex items-center gap-1">
           <button onClick={toggle} className="btn-ghost p-2" aria-label="Toggle theme">
@@ -61,7 +61,7 @@ export default function Sidebar({
       </div>
 
       {/* Profile chip */}
-      <button onClick={onOpenProfile} className="px-4 py-3 border-b flex items-center gap-3 hover:bg-stone-100 dark:hover:bg-stone-800/40 transition-colors text-left">
+      <button onClick={onOpenProfile} className="px-4 py-3 border-b flex items-center gap-3 hover:bg-ocean-50 dark:hover:bg-mist-800/40 transition-colors text-left active:bg-ocean-100 dark:active:bg-mist-800/60">
         <Avatar profile={profile} size="sm" online={isOnline(profile, onlineIds)} />
         <div className="flex-1 min-w-0">
           <p className="font-medium text-sm truncate">{profile?.display_name || profile?.username || "You"}</p>
@@ -70,7 +70,7 @@ export default function Sidebar({
       </button>
 
       {/* Tabs */}
-      <div className="px-3 pt-3 flex gap-1">
+      <div className="px-2 pt-3 flex gap-1 safe-top">
         <TabButton active={tab === "chats"} onClick={() => setTab("chats")} icon={<MessageSquare className="w-4 h-4" />} label="Chats" badge={chatList.filter(c => c.unreadCount > 0).length} />
         <TabButton active={tab === "requests"} onClick={() => setTab("requests")} icon={<Bell className="w-4 h-4" />} label="Requests" badge={pendingRequests.length} />
         <TabButton active={tab === "friends"} onClick={() => setTab("friends")} icon={<Users className="w-4 h-4" />} label="Friends" />
@@ -93,7 +93,7 @@ export default function Sidebar({
       )}
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto px-2">
+      <div className="flex-1 overflow-y-auto px-1.5 pb-2" style={{ WebkitOverflowScrolling: 'touch' }}>
         {tab === "chats" && (
           <div className="space-y-0.5">
             {filteredChats.length === 0 && (
@@ -115,7 +115,7 @@ export default function Sidebar({
           <div className="space-y-2">
             {pendingRequests.length === 0 && <EmptyState text="No pending requests." />}
             {pendingRequests.map((req) => (
-              <div key={req.friendship.id} className="px-3 py-3 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800/40 transition-colors">
+              <div key={req.friendship.id} className="px-3 py-3 rounded-xl hover:bg-ocean-50 dark:hover:bg-mist-800/40 transition-colors">
                 <div className="flex items-center gap-3">
                   <Avatar profile={req.profile} size="md" />
                   <div className="flex-1 min-w-0">
@@ -163,7 +163,7 @@ export default function Sidebar({
               <button
                 key={item.friend.id}
                 onClick={() => onSelectChat(item.friend)}
-                className={`w-full px-3 py-2.5 rounded-xl flex items-center gap-3 transition-colors text-left ${activeChatId === item.friend.id ? "bg-moss-500/10" : "hover:bg-stone-100 dark:hover:bg-stone-800/40"}`}
+                className={`w-full px-3 py-2.5 rounded-xl flex items-center gap-3 transition-colors text-left ${activeChatId === item.friend.id ? "bg-ocean-500/10" : "hover:bg-ocean-50 dark:hover:bg-mist-800/40"} active:bg-ocean-100 dark:active:bg-mist-800/60`}
               >
                 <Avatar profile={item.friend} size="md" online={isOnline(item.friend, onlineIds)} />
                 <div className="flex-1 min-w-0">
@@ -179,7 +179,7 @@ export default function Sidebar({
       </div>
 
       {/* Footer */}
-      <div className="px-4 py-3 border-t">
+      <div className="px-4 py-3 border-t safe-bottom">
         <button onClick={signOut} className="btn-ghost w-full text-sm">Sign out</button>
       </div>
     </div>
@@ -190,13 +190,13 @@ function TabButton({ active, onClick, icon, label, badge }: { active: boolean; o
   return (
     <button
       onClick={onClick}
-      className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-xl text-xs font-medium transition-all relative ${active ? "text-leaf-600 dark:text-leaf-400" : ""}`}
+      className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-xl text-xs font-medium transition-all relative ${active ? "text-ocean-600 dark:text-ocean-400" : ""}`}
       style={active ? { background: "var(--bg-elevated)" } : { color: "var(--text-muted)" }}
     >
       <div className="relative">
         {icon}
         {badge ? (
-          <span className="absolute -top-1.5 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-clay-500 text-white text-[10px] font-bold flex items-center justify-center">
+          <span className="absolute -top-1.5 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-coral-500 text-white text-[10px] font-bold flex items-center justify-center">
             {badge}
           </span>
         ) : null}
@@ -221,7 +221,7 @@ function ChatRow({ item, onlineIds, active, onClick }: { item: ChatListItem; onl
   return (
     <button
       onClick={onClick}
-      className={`w-full px-3 py-2.5 rounded-xl flex items-center gap-3 transition-colors text-left ${active ? "bg-moss-500/15" : "hover:bg-stone-100 dark:hover:bg-stone-800/40"}`}
+      className={`w-full px-3 py-2.5 rounded-xl flex items-center gap-3 transition-colors text-left ${active ? "bg-ocean-500/15" : "hover:bg-ocean-50 dark:hover:bg-mist-800/40"} active:bg-ocean-100 dark:active:bg-mist-800/60`}
     >
       <Avatar profile={item.friend} size="md" online={online} />
       <div className="flex-1 min-w-0">
@@ -234,7 +234,7 @@ function ChatRow({ item, onlineIds, active, onClick }: { item: ChatListItem; onl
             {last && last.sender_id !== item.friend.id ? "You: " : ""}{preview}
           </p>
           {item.unreadCount > 0 && (
-            <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-leaf-500 text-white text-[10px] font-bold flex items-center justify-center shrink-0">
+            <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-teal-500 text-white text-[10px] font-bold flex items-center justify-center shrink-0">
               {item.unreadCount}
             </span>
           )}

@@ -147,14 +147,14 @@ export default function MessageInput({ onSend, onTyping }: Props) {
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setShowAttach(false)} />
                 <div className="absolute bottom-full mb-2 left-0 z-20 card shadow-soft py-1 min-w-[180px] animate-fade-in">
-                  <button onClick={() => imageRef.current?.click()} className="w-full px-4 py-2 text-sm text-left hover:bg-stone-100 dark:hover:bg-stone-800/40 flex items-center gap-2.5">
-                    <ImageIcon className="w-4 h-4 text-leaf-500" /> Photo
+                  <button onClick={() => imageRef.current?.click()} className="w-full px-4 py-2 text-sm text-left hover:bg-ocean-50 dark:hover:bg-mist-800/40 flex items-center gap-2.5">
+                    <ImageIcon className="w-4 h-4 text-ocean-500" /> Photo
                   </button>
-                  <button onClick={() => { imageRef.current?.click(); }} className="w-full px-4 py-2 text-sm text-left hover:bg-stone-100 dark:hover:bg-stone-800/40 flex items-center gap-2.5">
-                    <Eye className="w-4 h-4 text-clay-500" /> View-once photo
+                  <button onClick={() => { imageRef.current?.click(); }} className="w-full px-4 py-2 text-sm text-left hover:bg-ocean-50 dark:hover:bg-mist-800/40 flex items-center gap-2.5">
+                    <Eye className="w-4 h-4 text-coral-500" /> View-once photo
                   </button>
-                  <button onClick={() => fileRef.current?.click()} className="w-full px-4 py-2 text-sm text-left hover:bg-stone-100 dark:hover:bg-stone-800/40 flex items-center gap-2.5">
-                    <FileText className="w-4 h-4 text-stone-500" /> Document (PDF, DOCX, ZIP)
+                  <button onClick={() => fileRef.current?.click()} className="w-full px-4 py-2 text-sm text-left hover:bg-ocean-50 dark:hover:bg-mist-800/40 flex items-center gap-2.5">
+                    <FileText className="w-4 h-4 text-mist-500" /> Document (PDF, DOCX, ZIP)
                   </button>
                 </div>
               </>
@@ -179,12 +179,12 @@ export default function MessageInput({ onSend, onTyping }: Props) {
 
           {/* Voice or Send */}
           {text.trim() ? (
-            <button onClick={send} disabled={uploading} className="p-2.5 rounded-full text-white transition-all hover:scale-105" style={{ background: "linear-gradient(135deg, #5e7d56, #477d3c)" }}>
+            <button onClick={send} disabled={uploading} className="p-2.5 rounded-full text-white transition-all hover:scale-105" style={{ background: "linear-gradient(135deg, #38bdf8, #0284c7)" }}>
               {uploading ? <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Send className="w-5 h-5" />}
             </button>
           ) : (
             <button onClick={startRecording} disabled={uploading} className="btn-ghost p-2.5" title="Record voice message">
-              {uploading ? <span className="w-5 h-5 border-2 border-moss-500/30 border-t-moss-500 rounded-full animate-spin" /> : <Mic className="w-5 h-5" />}
+              {uploading ? <span className="w-5 h-5 border-2 border-ocean-500/30 border-t-ocean-500 rounded-full animate-spin" /> : <Mic className="w-5 h-5" />}
             </button>
           )}
         </div>

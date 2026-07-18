@@ -178,10 +178,10 @@ export default function ChatWindow({ friend, onlineIds, onBack, onOpenProfile, o
   }
 
   return (
-    <div className="h-full flex flex-col nature-gradient leaf-pattern">
+    <div className="h-full flex flex-col ocean-gradient ocean-bg wave-pattern">
       {/* Header */}
       <div className="glass border-b px-4 py-3 flex items-center gap-3">
-        <button onClick={onBack} className="lg:hidden btn-ghost p-1.5">
+        <button onClick={onBack} className="sm:hidden btn-ghost p-1.5">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <button onClick={() => onOpenProfile(friend)} className="flex items-center gap-3 flex-1 min-w-0 text-left">
@@ -206,7 +206,7 @@ export default function ChatWindow({ friend, onlineIds, onBack, onOpenProfile, o
                 <div className="absolute right-0 top-full mt-1 z-20 card shadow-soft py-1 min-w-[180px] animate-fade-in">
                   <button
                     onClick={() => { onOpenProfile(friend); setShowMenu(false); }}
-                    className="w-full px-4 py-2 text-sm text-left hover:bg-stone-100 dark:hover:bg-stone-800/40 flex items-center gap-2"
+                    className="w-full px-4 py-2 text-sm text-left hover:bg-ocean-50 dark:hover:bg-mist-800/40 flex items-center gap-2"
                   >
                     View profile
                   </button>
@@ -227,7 +227,7 @@ export default function ChatWindow({ friend, onlineIds, onBack, onOpenProfile, o
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
         {loading ? (
           <div className="flex items-center justify-center h-full">
-            <span className="w-6 h-6 border-2 border-moss-500/30 border-t-moss-500 rounded-full animate-spin" />
+            <span className="w-6 h-6 border-2 border-ocean-500/30 border-t-ocean-500 rounded-full animate-spin" />
           </div>
         ) : groups.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-6">
@@ -273,9 +273,9 @@ export default function ChatWindow({ friend, onlineIds, onBack, onOpenProfile, o
           <div className="flex items-center gap-2 px-2 py-1">
             <Avatar profile={friend} size="xs" />
             <div className="flex items-center gap-1 px-3 py-2.5 rounded-2xl rounded-bl-sm" style={{ background: "var(--bg-elevated)" }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-moss-400 animate-typing" style={{ animationDelay: "0ms" }} />
-              <span className="w-1.5 h-1.5 rounded-full bg-moss-400 animate-typing" style={{ animationDelay: "150ms" }} />
-              <span className="w-1.5 h-1.5 rounded-full bg-moss-400 animate-typing" style={{ animationDelay: "300ms" }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-ocean-400 animate-typing" style={{ animationDelay: "0ms" }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-ocean-400 animate-typing" style={{ animationDelay: "150ms" }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-ocean-400 animate-typing" style={{ animationDelay: "300ms" }} />
             </div>
           </div>
         )}
@@ -285,7 +285,7 @@ export default function ChatWindow({ friend, onlineIds, onBack, onOpenProfile, o
       {/* Reply preview */}
       {replyTo && (
         <div className="px-4 py-2 border-t flex items-center gap-3" style={{ background: "var(--bg-elevated)" }}>
-          <div className="w-1 h-8 rounded-full bg-leaf-500" />
+          <div className="w-1 h-8 rounded-full bg-teal-500" />
           <div className="flex-1 min-w-0">
             <p className="text-xs font-medium" style={{ color: "var(--accent)" }}>Replying to {replyTo.sender_id === user?.id ? "yourself" : friend.display_name || friend.username}</p>
             <p className="text-xs truncate" style={{ color: "var(--text-muted)" }}>

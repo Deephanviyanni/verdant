@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { supabase } from "../lib/supabase";
 import { useTheme } from "../context/ThemeContext";
-import { Leaf, Mail, Lock, Eye, EyeOff, Sparkles } from "lucide-react";
+import { Waves, Mail, Lock, Eye, EyeOff, Sparkles } from "lucide-react";
 
 type Mode = "login" | "signup";
 
@@ -56,10 +56,10 @@ export default function AuthScreen() {
   };
 
   return (
-    <div className="min-h-screen w-full nature-gradient leaf-pattern flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen w-full ocean-gradient ocean-bg wave-pattern flex items-center justify-center p-4 relative overflow-hidden">
       {/* Decorative blobs */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-moss-300/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-clay-300/15 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+      <div className="absolute top-0 left-0 w-96 h-96 bg-ocean-300/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-teal-300/15 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
 
       <button
         onClick={toggle}
@@ -72,14 +72,14 @@ export default function AuthScreen() {
       <div className="relative z-10 w-full max-w-md animate-slide-up">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 shadow-soft" style={{ background: "linear-gradient(135deg, #7d9a74, #477d3c)" }}>
-            <Leaf className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 shadow-ocean" style={{ background: "linear-gradient(135deg, #38bdf8, #0284c7)" }}>
+            <Waves className="w-8 h-8 text-white" />
           </div>
           <h1 className="font-serif text-3xl font-semibold tracking-tight" style={{ color: "var(--text-primary)" }}>
-            Verdant
+            Ocean Breeze
           </h1>
           <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
-            Private conversations, naturally connected
+            Private conversations, flowing seamlessly
           </p>
         </div>
 
@@ -120,7 +120,7 @@ export default function AuthScreen() {
                   className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
                     mode === m ? "text-white shadow-soft" : "hover:opacity-80"
                   }`}
-                  style={mode === m ? { background: "linear-gradient(135deg, #5e7d56, #477d3c)" } : { color: "var(--text-secondary)" }}
+                  style={mode === m ? { background: "linear-gradient(135deg, #38bdf8, #0284c7)" } : { color: "var(--text-secondary)" }}
                 >
                   {m === "login" ? "Sign In" : "Sign Up"}
                 </button>
@@ -202,7 +202,7 @@ function ErrorBox({ text }: { text: string }) {
 
 function InfoBox({ text }: { text: string }) {
   return (
-    <div className="px-4 py-2.5 rounded-xl text-sm bg-leaf-500/10 text-leaf-700 dark:text-leaf-300 border border-leaf-500/20">
+    <div className="px-4 py-2.5 rounded-xl text-sm bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
       {text}
     </div>
   );

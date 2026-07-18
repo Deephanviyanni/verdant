@@ -3,7 +3,7 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import Avatar from "../components/Avatar";
-import { Camera, Check, Leaf } from "lucide-react";
+import { Camera, Check, Waves } from "lucide-react";
 
 export default function ProfileSetup() {
   const { user, refreshProfile, signOut } = useAuth();
@@ -67,9 +67,9 @@ export default function ProfileSetup() {
   };
 
   return (
-    <div className="min-h-screen w-full nature-gradient leaf-pattern flex items-center justify-center p-4 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-96 h-96 bg-moss-300/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-clay-300/15 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+    <div className="min-h-screen w-full ocean-gradient ocean-bg wave-pattern flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-96 h-96 bg-ocean-300/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-teal-300/15 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
 
       <button onClick={toggle} className="absolute top-5 right-5 z-10 p-2.5 rounded-xl card hover:scale-105 transition-transform">
         {theme === "light" ? "🌙" : "☀️"}
@@ -78,12 +78,12 @@ export default function ProfileSetup() {
       <div className="relative z-10 w-full max-w-lg animate-slide-up">
         <div className="card p-8 shadow-soft">
           <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-3" style={{ background: "linear-gradient(135deg, #7d9a74, #477d3c)" }}>
-              <Leaf className="w-7 h-7 text-white" />
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-3" style={{ background: "linear-gradient(135deg, #38bdf8, #0284c7)" }}>
+              <Waves className="w-7 h-7 text-white" />
             </div>
             <h1 className="font-serif text-2xl font-semibold">Set up your profile</h1>
             <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
-              This is how others will see you on Verdant.
+              This is how others will see you on Ocean Breeze.
             </p>
           </div>
 
@@ -118,7 +118,7 @@ export default function ProfileSetup() {
                 placeholder="e.g. forest_walker"
                 className="input-field"
               />
-              <p className={`text-xs mt-1 ${usernameOk ? "text-leaf-600" : "text-red-500"}`}>
+              <p className={`text-xs mt-1 ${usernameOk ? "text-teal-600" : "text-red-500"}`}>
                 {username.length === 0 ? "Letters, numbers, underscores. Min 3 chars." : usernameOk ? "Available" : "Already taken"}
               </p>
             </div>

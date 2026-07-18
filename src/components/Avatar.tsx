@@ -39,19 +39,19 @@ export default function Avatar({ profile, username, displayName, url, size = "md
         <img
           src={avatarUrl}
           alt={name || uname || "avatar"}
-          className={`${sizes[size]} rounded-full object-cover ${showRing ? "ring-2 ring-moss-400/40" : ""}`}
+          className={`${sizes[size]} rounded-full object-cover ${showRing ? "ring-2 ring-ocean-400/40" : ""}`}
         />
       ) : (
         <div
           className={`${sizes[size]} rounded-full flex items-center justify-center font-semibold text-white`}
-          style={{ background: "linear-gradient(135deg, #7d9a74, #5e7d56)" }}
+          style={{ background: "linear-gradient(135deg, #38bdf8, #0284c7)" }}
         >
           {initials}
         </div>
       )}
       {online && (
-        <span className={`absolute ${dotSizes[size]} bg-leaf-500 rounded-full border-2`} style={{ borderColor: "var(--bg-panel)" }}>
-          <span className="absolute inset-0 rounded-full bg-leaf-400 animate-ping opacity-60" />
+        <span className={`absolute ${dotSizes[size]} bg-teal-500 rounded-full border-2`} style={{ borderColor: "var(--bg-panel)" }}>
+          <span className="absolute inset-0 rounded-full bg-teal-400 animate-ping opacity-60" />
         </span>
       )}
     </div>

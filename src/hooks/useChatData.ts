@@ -16,24 +16,15 @@ export type FriendRequestItem = {
 
 export function useChatData() {
   const { user } = useAuth();
-  const [friends, setFriends] = useState<Profile[]>([]);
   const [chatList, setChatList] = useState<ChatListItem[]>([]);
   const [pendingRequests, setPendingRequests] = useState<FriendRequestItem[]>([]);
   const [sentRequests, setSentRequests] = useState<Profile[]>([]);
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
-  const [allProfiles, setAllProfiles] = useState<Map<string, Profile>>(new Map());
   const [loading, setLoading] = useState(true);
-  const mountedRef = useRef(true);
-  mountedRef.current = true;
-
-  const fetchProfile = useCallback(async (id: string): Promise<Profile | null> => {
-    const { data } = await supabase.from("profiles").select("*").eq("id", id).maybeSingle();
-    return data as Profile | null;
-  }, []);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadFriends = useCallback(async () => {
     if (!user) return;
-    // Accepted friendships where I'm either side
     const { data: accepted } = await supabase
       .from("friendships")
       .select("*")
@@ -45,51 +36,53 @@ export function useChatData() {
     );
     const uniqueIds = [...new Set(friendIds)];
 
-    if (uniqueIds.length === 0) { setFriends([]); setChatList([]); return; }
+    if (uniqueIds.length === 0) { setChatList([]); return; }
 
-    const { data: friendProfiles } = await supabase
-      .from("profiles")
-      .select("*")
-      .in("id", uniqueIds);
+    const [profilesRes, hidesRes] = await Promise.all([
+      supabase.from("profiles").select("*").in("id", uniqueIds),
+      supabase.from("message_hides").select("message_id").eq("user_id", user.id),
+    ]);
 
-    const profiles = (friendProfiles || []) as Profile[];
-    setFriends(profiles);
+    const profiles = (profilesRes.data || []) as Profile[];
+    const hiddenIds = new Set((hidesRes.data || []).map((h) => h.message_id));
 
-    // Build profile map
-    setAllProfiles((prev) => {
-      const m = new Map(prev);
-      profiles.forEach((p) => m.set(p.id, p));
-      return m;
-    });
-
-    // Get last message + unread count for each friend
-    const items: ChatListItem[] = [];
-    for (const fp of profiles) {
-      const { data: msgs } = await supabase
-        .from("messages")
+    const [sentMsgs, recvMsgs] = await Promise.all([
+      supabase.from("messages")
         .select("*")
-        .or(`and(sender_id.eq.${user.id},receiver_id.eq.${fp.id}),and(sender_id.eq.${fp.id},receiver_id.eq.${user.id})`)
+        .in("receiver_id", uniqueIds)
+        .eq("sender_id", user.id)
         .order("created_at", { ascending: false })
-        .limit(20);
+        .limit(200),
+      supabase.from("messages")
+        .select("*")
+        .in("sender_id", uniqueIds)
+        .eq("receiver_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(200),
+    ]);
 
-      // Filter out messages hidden by me
-      const visibleMsgs = (msgs || []) as Message[];
+    const allMsgs = [...(sentMsgs.data || []), ...(recvMsgs.data || [])] as Message[];
+    const lastByFriend = new Map<string, Message>();
+    const unreadByFriend = new Map<string, number>();
 
-      // Get my hides
-      const { data: hides } = await supabase
-        .from("message_hides")
-        .select("message_id")
-        .eq("user_id", user.id);
-      const hiddenIds = new Set((hides || []).map((h) => h.message_id));
-      const filtered = visibleMsgs.filter((m) => !hiddenIds.has(m.id));
-      const lastMsg = filtered[0] || null;
-
-      const unread = filtered.filter((m) => m.receiver_id === user.id && !m.read_at && !m.deleted_for_everyone).length;
-
-      items.push({ friend: fp, lastMessage: lastMsg, unreadCount: unread });
+    for (const msg of allMsgs) {
+      const otherId = msg.sender_id === user.id ? msg.receiver_id : msg.sender_id;
+      if (hiddenIds.has(msg.id)) continue;
+      const existing = lastByFriend.get(otherId);
+      if (!existing || new Date(msg.created_at) > new Date(existing.created_at)) {
+        lastByFriend.set(otherId, msg);
+      }
+      if (msg.receiver_id === user.id && !msg.read_at && !msg.deleted_for_everyone) {
+        unreadByFriend.set(otherId, (unreadByFriend.get(otherId) || 0) + 1);
+      }
     }
 
-    // Sort by last message time
+    const items: ChatListItem[] = profiles.map((fp) => ({
+      friend: fp,
+      lastMessage: lastByFriend.get(fp.id) || null,
+      unreadCount: unreadByFriend.get(fp.id) || 0,
+    }));
+
     items.sort((a, b) => {
       const ta = a.lastMessage ? new Date(a.lastMessage.created_at).getTime() : 0;
       const tb = b.lastMessage ? new Date(b.lastMessage.created_at).getTime() : 0;
@@ -101,33 +94,42 @@ export function useChatData() {
 
   const loadRequests = useCallback(async () => {
     if (!user) return;
-    // Pending requests I received
-    const { data: received } = await supabase
-      .from("friendships")
-      .select("*")
-      .eq("addressee_id", user.id)
-      .eq("status", "pending");
+    const [receivedRes, sentRes] = await Promise.all([
+      supabase.from("friendships").select("*").eq("addressee_id", user.id).eq("status", "pending"),
+      supabase.from("friendships").select("*").eq("requester_id", user.id).eq("status", "pending"),
+    ]);
 
-    const reqItems: FriendRequestItem[] = [];
-    for (const f of (received || []) as Friendship[]) {
-      const p = await fetchProfile(f.requester_id);
-      if (p) reqItems.push({ friendship: f, profile: p });
+    const received = (receivedRes.data || []) as Friendship[];
+    const sent = (sentRes.data || []) as Friendship[];
+
+    const receivedIds = received.map((f) => f.requester_id);
+    const sentIds = sent.map((f) => f.addressee_id);
+    const allIds = [...new Set([...receivedIds, ...sentIds])];
+
+    if (allIds.length === 0) {
+      setPendingRequests([]);
+      setSentRequests([]);
+      return;
     }
+
+    const { data: profilesData } = await supabase.from("profiles").select("*").in("id", allIds);
+    const profileMap = new Map<string, Profile>();
+    (profilesData || []).forEach((p) => profileMap.set((p as Profile).id, p as Profile));
+
+    const reqItems: FriendRequestItem[] = received
+      .map((f) => {
+        const p = profileMap.get(f.requester_id);
+        return p ? { friendship: f, profile: p } : null;
+      })
+      .filter((x): x is FriendRequestItem => x !== null);
+
+    const sentProfiles = sentIds
+      .map((id) => profileMap.get(id))
+      .filter((p): p is Profile => p !== null);
+
     setPendingRequests(reqItems);
-
-    // Pending requests I sent
-    const { data: sent } = await supabase
-      .from("friendships")
-      .select("*")
-      .eq("requester_id", user.id)
-      .eq("status", "pending");
-    const sentProfiles: Profile[] = [];
-    for (const f of (sent || []) as Friendship[]) {
-      const p = await fetchProfile(f.addressee_id);
-      if (p) sentProfiles.push(p);
-    }
     setSentRequests(sentProfiles);
-  }, [user, fetchProfile]);
+  }, [user]);
 
   const loadNotifications = useCallback(async () => {
     if (!user) return;
@@ -145,50 +147,36 @@ export function useChatData() {
     setLoading(false);
   }, [loadFriends, loadRequests, loadNotifications]);
 
-  // Initial load
+  const debouncedRefresh = useCallback(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      loadFriends();
+      loadRequests();
+      loadNotifications();
+    }, 300);
+  }, [loadFriends, loadRequests, loadNotifications]);
+
   useEffect(() => {
     if (user) refreshAll();
-    return () => { mountedRef.current = false; };
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [user, refreshAll]);
 
-  // Realtime subscriptions
   useEffect(() => {
     if (!user) return;
-
-    const msgChannel = supabase
-      .channel("sidebar-messages")
-      .on("postgres_changes", { event: "*", schema: "public", table: "messages", filter: `receiver_id=eq.${user.id}` }, () => {
-        loadFriends();
-      })
-      .on("postgres_changes", { event: "*", schema: "public", table: "messages", filter: `sender_id=eq.${user.id}` }, () => {
-        loadFriends();
-      })
+    const channel = supabase
+      .channel("sidebar-realtime")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `receiver_id=eq.${user.id}` }, debouncedRefresh)
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "messages", filter: `receiver_id=eq.${user.id}` }, debouncedRefresh)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `sender_id=eq.${user.id}` }, debouncedRefresh)
+      .on("postgres_changes", { event: "*", schema: "public", table: "friendships" }, debouncedRefresh)
+      .on("postgres_changes", { event: "*", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` }, debouncedRefresh)
       .subscribe();
 
-    const friendChannel = supabase
-      .channel("sidebar-friends")
-      .on("postgres_changes", { event: "*", schema: "public", table: "friendships" }, () => {
-        loadFriends();
-        loadRequests();
-      })
-      .subscribe();
-
-    const notifChannel = supabase
-      .channel("sidebar-notifs")
-      .on("postgres_changes", { event: "*", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` }, () => {
-        loadNotifications();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(msgChannel);
-      supabase.removeChannel(friendChannel);
-      supabase.removeChannel(notifChannel);
-    };
-  }, [user, loadFriends, loadRequests, loadNotifications]);
+    return () => { supabase.removeChannel(channel); };
+  }, [user, debouncedRefresh]);
 
   return {
-    friends, chatList, pendingRequests, sentRequests, notifications,
-    allProfiles, loading, refreshAll, loadFriends, loadNotifications,
+    chatList, pendingRequests, sentRequests, notifications,
+    loading, refreshAll, loadFriends, loadNotifications,
   };
 }

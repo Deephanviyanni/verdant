@@ -12,7 +12,7 @@ import ChatWindow from "./components/ChatWindow";
 import ProfileModal from "./components/ProfileModal";
 import SettingsModal from "./components/SettingsModal";
 import FriendSearchModal from "./components/FriendSearchModal";
-import { Leaf } from "lucide-react";
+import { Waves } from "lucide-react";
 
 function MainApp() {
   const { user, profile, loading } = useAuth();
@@ -59,12 +59,12 @@ function MainApp() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center nature-gradient">
+      <div className="min-h-screen flex items-center justify-center ocean-gradient ocean-bg">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center animate-pulse" style={{ background: "linear-gradient(135deg, #7d9a74, #477d3c)" }}>
-            <Leaf className="w-7 h-7 text-white" />
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center animate-pulse" style={{ background: "linear-gradient(135deg, #38bdf8, #0284c7)" }}>
+            <Waves className="w-7 h-7 text-white" />
           </div>
-          <span className="w-6 h-6 border-2 border-moss-500/30 border-t-moss-500 rounded-full animate-spin" />
+          <span className="w-6 h-6 border-2 border-ocean-500/30 border-t-ocean-500 rounded-full animate-spin" />
         </div>
       </div>
     );
@@ -76,7 +76,7 @@ function MainApp() {
   return (
     <div className="h-screen flex overflow-hidden">
       {/* Sidebar */}
-      <aside className={`w-full sm:w-80 md:w-96 border-r shrink-0 ${activeChat ? "hidden lg:flex" : "flex"} flex-col`}>
+      <aside className={`w-full sm:w-80 md:w-96 border-r shrink-0 ${activeChat ? "hidden sm:flex" : "flex"} flex-col`}>
         <Sidebar
           chatList={chatList}
           pendingRequests={pendingRequests}
@@ -94,7 +94,7 @@ function MainApp() {
       </aside>
 
       {/* Chat area */}
-      <main className={`flex-1 ${activeChat ? "flex" : "hidden lg:flex"} flex-col`}>
+      <main className={`flex-1 ${activeChat ? "flex" : "hidden sm:flex"} flex-col`}>
         {activeChat ? (
           <ChatWindow
             key={activeChat.id}
@@ -105,11 +105,11 @@ function MainApp() {
             onRemoveFriend={handleRemoveFriend}
           />
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center nature-gradient leaf-pattern text-center px-6">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center mb-5" style={{ background: "linear-gradient(135deg, #a3c2a4, #7d9a74)" }}>
-              <Leaf className="w-10 h-10 text-white" />
+          <div className="flex-1 flex flex-col items-center justify-center ocean-gradient ocean-bg wave-pattern text-center px-6">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center mb-5" style={{ background: "linear-gradient(135deg, #7dd3fc, #38bdf8)" }}>
+              <Waves className="w-10 h-10 text-white" />
             </div>
-            <h2 className="font-serif text-2xl font-semibold mb-2">Welcome to Verdant</h2>
+            <h2 className="font-serif text-2xl font-semibold mb-2">Welcome to Ocean Breeze</h2>
             <p className="text-sm max-w-xs" style={{ color: "var(--text-muted)" }}>
               Select a conversation or find a friend to start chatting privately.
             </p>
